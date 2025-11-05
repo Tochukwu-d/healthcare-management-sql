@@ -2,7 +2,7 @@
 
 USE healthcaredata_db;
 
-# show relationship b/w patient_id in tables 'appointment' and 'patient'
+# show relationship b/w patient_id in tables 'appointment' and 'patient' (Appointment: Patient and Doctors)
 ALTER TABLE appointment
 ADD CONSTRAINT foreign_key_appointment_patient
 FOREIGN KEY (patient_Id) 
@@ -17,5 +17,47 @@ REFERENCES doctors(doct_Id)
 ON DELETE cascade
 ON UPDATE cascade;
 
+# Doctors and Department
+ALTER TABLE doctors
+ADD CONSTRAINT foreign_key_department
+FOREIGN KEY (dept_Id)
+REFERENCES department (dept_Id)
+ON DELETE cascade
+ON UPDATE cascade;
+
+ALTER TABLE department
+ADD PRIMARY KEY (dept_Id);
+
+# Medical Records: Patients and Doctors
+ALTER TABLE medicalrecords
+ADD CONSTRAINT fkey_medical_record_patients
+FOREIGN KEY (patient_Id)
+REFERENCES patients (patient_Id)
+ON DELETE cascade
+ON UPDATE cascade;
+
+ALTER TABLE medicalrecords
+ADD CONSTRAINT fkey_medical_record_doctors
+FOREIGN KEY (doct_Id)
+REFERENCES doctors (doct_Id)
+ON DELETE cascade
+ON UPDATE cascade;
+
+SELECT DISTINCT doct_Id
+FROM medicalrecords
+WHERE doct_Id NOT IN (SELECT doct_Id FROM doctors);
+SET SQL_SAFE_UPDATES = 0;
+DELETE FROM medicalrecords
+WHERE doct_Id NOT IN (SELECT doct_Id FROM doctors);
+SET SQL_SAFE_UPDATES = 1;
+
+
+
+
+
+
+
+
+SHOW COLUMNS FROM department;
 SHOW COLUMNS FROM patients;
 SHOW COLUMNS FROM appointment;
