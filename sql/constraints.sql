@@ -35,6 +35,17 @@ FOREIGN KEY (patient_Id)
 REFERENCES patients (patient_Id)
 ON DELETE cascade
 ON UPDATE cascade;
+##########################################################
+SELECT doct_Id
+FROM medicalrecords
+WHERE doct_Id NOT IN (SELECT doct_Id FROM doctors);
+
+SET SQL_SAFE_UPDATES = 0;
+
+DELETE FROM medicalrecords
+WHERE doct_Id NOT IN (SELECT doct_Id FROM doctors);
+
+SET SQL_SAFE_UPDATES = 1;
 
 ALTER TABLE medicalrecords
 ADD CONSTRAINT fkey_medical_record_doctors
@@ -43,13 +54,54 @@ REFERENCES doctors (doct_Id)
 ON DELETE cascade
 ON UPDATE cascade;
 
+############################################################
+# Surgeryrecords: nurses, surgeons
+
+DESCRIBE doctors;
+DESCRIBE surgeryrecords;
+
+ALTER TABLE surgeryrecords
+CHANGE COLUMN surgeon_Id doct_Id INT;
+
 SELECT DISTINCT doct_Id
-FROM medicalrecords
+FROM surgeryrecords
 WHERE doct_Id NOT IN (SELECT doct_Id FROM doctors);
+
 SET SQL_SAFE_UPDATES = 0;
-DELETE FROM medicalrecords
+
+DELETE FROM surgeryrecords
 WHERE doct_Id NOT IN (SELECT doct_Id FROM doctors);
+
 SET SQL_SAFE_UPDATES = 1;
+
+SELECT DISTINCT nurse_Id
+FROM surgeryrecords
+WHERE nurse_Id NOT IN (SELECT nurse_Id FROM nurse);
+
+SHOW INDEXES FROM nurse;
+
+ALTER TABLE nurse
+CHANGE COLUMN `ï»¿nurse_Id` nurse_Id INT;
+
+ALTER TABLE nurse
+ADD PRIMARY KEY (nurse_Id);
+
+ALTER TABLE surgeryrecords
+ADD CONSTRAINT fkey_surgeryrecords_Nurs
+FOREIGN KEY (nurse_Id)
+REFERENCES nurse (nurse_Id)
+ON DELETE cascade
+ON UPDATE cascade;
+
+ALTER TABLE surgeryrecords
+ADD CONSTRAINT fkey_surgeryrecords_Doct
+FOREIGN KEY (doct_Id)
+REFERENCES doctors (doct_Id)
+ON DELETE cascade
+ON UPDATE cascade;
+
+
+
 
 
 
