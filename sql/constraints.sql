@@ -100,6 +100,28 @@ REFERENCES doctors (doct_Id)
 ON DELETE cascade
 ON UPDATE cascade;
 
+############################################################
+
+# department and wards
+
+ALTER TABLE wards
+ADD CONSTRAINT fkey_ward_department
+FOREIGN KEY (dept_Id)
+REFERENCES department (dept_Id)
+ON DELETE cascade
+ON UPDATE cascade;
+
+#############################################################
+
+# room and department
+
+ALTER TABLE room
+ADD CONSTRAINT fkbed_room_department
+FOREIGN KEY (dept_Id) REFERENCES department (dept_Id)
+ON DELETE SET NULL
+ON UPDATE CASCADE;
+
+
 
 
 
